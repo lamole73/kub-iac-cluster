@@ -16,10 +16,10 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
   vboxvmname="#{environmentname}"
   # Change memory for each VM, make nil to not use the vm
   memArray = Array.new(4)
-  memArray[0] = nil  # 512   the mgr running the ansible scripts
+  memArray[0] = 512  # 512   the mgr running the ansible scripts
   memArray[1] = 2048 # 2048  01 is the master node
-  memArray[2] = nil # 2048  02 is the node 2
-  memArray[3] = nil # 2048  03 is the node 3
+  memArray[2] = 2048 # 2048  02 is the node 2
+  memArray[3] = 2048 # 2048  03 is the node 3
   cpuArray = Array.new(4)
   cpuArray[0] = 1    # the mgr running the ansible scripts
   cpuArray[1] = 2    # 01 is the master node
