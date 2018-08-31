@@ -1,25 +1,25 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"
+_VAGRANTFILE_API_VERSION = "2"
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
 
   # Relative path of main project folder from vagrant file
   vb_descr_vagrantfile_folder=File.dirname(__FILE__)
   mainfolder_relative_path = ""
-  # The environment name (servers will be #{dmsenv}-01 .. 04)
-  dmsenv="hmrc857bento"
+  # The environment name (servers will be #{environmentname}-01 .. 04)
+  environmentname="kub"
   ippattern="10.10.27.8"
   # The VirtualBox VM name prefix, actual names will be #{vboxvmname}-mgr, #{vboxvmname}-01, e.t.c.
   # set it to nil to not name the VirtualBox VMs, i.e. let vagrant give default name
-  vboxvmname="#{dmsenv}"
+  vboxvmname="#{environmentname}"
   # Change memory for each VM, make nil to not use the vm
   memArray = Array.new(4)
   memArray[0] = nil  # 512   the mgr running the ansible scripts
   memArray[1] = 2048 # 2048  01 is the master node
-  memArray[2] = 2048 # 2048  02 is the node 2
-  memArray[3] = 2048 # 2048  03 is the node 3
+  memArray[2] = nil # 2048  02 is the node 2
+  memArray[3] = nil # 2048  03 is the node 3
   cpuArray = Array.new(4)
   cpuArray[0] = 1    # the mgr running the ansible scripts
   cpuArray[1] = 2    # 01 is the master node
@@ -94,15 +94,15 @@ Vagrantfile folder:
       d.vm.provision :shell, run: "always", inline: <<-SHELL
         for i in `seq 1 4`;
         do
-          grep -q "^[0-9].*#{dmsenv}-0${i}" /etc/hosts
+          grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
           RV=$?
           if [ $RV == 0 ]; then
             # update via sed
-            sed -i "s|^[0-9].*#{dmsenv}-0${i}.*$|#{ippattern}${i} #{dmsenv}-0${i} #{dmsenv}-0${i}.labros.private|g" /etc/hosts
+            sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
           else
             # Add the line
             echo "" >> /etc/hosts
-            echo "#{ippattern}${i} #{dmsenv}-0${i} #{dmsenv}-0${i}.labros.private" >> /etc/hosts
+            echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
           fi
         done
       SHELL
@@ -143,7 +143,7 @@ Vagrantfile folder:
       # #i VM see memArray for which VM this is
       #
       config.vm.define "0#{i}" do |d|
-        d.vm.hostname = "#{dmsenv}-0#{i}"
+        d.vm.hostname = "#{environmentname}-0#{i}"
         d.vm.network :private_network, ip: "#{ippattern}#{i}"
         if vboxvmname != nil then
           d.vm.provider "virtualbox" do |v|
@@ -162,7 +162,7 @@ Vagrantfile folder:
 ## #{vb_descr_notes_box}
 
 = hostname: #{vboxvmname}-0#{i}, mem: #{memArray[i]} MB, CPUs: #{cpuArray[i]}
-= Users: root/1, vagrant/1, dms/dms (sambe)
+= Users: root/1, vagrant/1, dms/dms (samba)
 = Samba installed: #{install_samba}
             "]
         end
@@ -190,15 +190,15 @@ Vagrantfile folder:
         # d.vm.provision :shell, run: "always", inline: <<-SHELL
         #   for i in `seq 1 4`;
         #   do
-        #     grep -q "^[0-9].*#{dmsenv}-0${i}" /etc/hosts
+        #     grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
         #     RV=$?
         #     if [ $RV == 0 ]; then
         #       # update via sed
-        #       sed -i "s|^[0-9].*#{dmsenv}-0${i}.*$|#{ippattern}${i} #{dmsenv}-0${i} #{dmsenv}-0${i}.labros.private|g" /etc/hosts
+        #       sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
         #     else
         #       # Add the line
         #       echo "" >> /etc/hosts
-        #       echo "#{ippattern}${i} #{dmsenv}-0${i} #{dmsenv}-0${i}.labros.private" >> /etc/hosts
+        #       echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
         #     fi
         #   done
         # SHELL
