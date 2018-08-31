@@ -178,6 +178,10 @@ Vagrantfile folder:
         # ############## Increase SWAP size to 2048MB or XE11G and oracle VM
         # # bento centos-7.4 already has 2 GB swap size
         # d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_increase_swap_size.sh"
+        ############## Install docker
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_docker_centos.sh"
+        ############## Disable swap
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable_centos.sh"
         # ############## For hostname resolution of the VMs
         if install_avahi then
           d.vm.provision :shell, inline: <<-SHELL

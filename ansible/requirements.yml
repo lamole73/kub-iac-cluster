@@ -1,0 +1,28 @@
+#
+# The file contains roles that can
+# be downloaded from Ansible Galaxy
+# or other repositories
+#
+# Usage: ansible-galaxy install -r requirements.yml -p ~/roles
+
+- name: ANXS.postgresql
+  src: https://github.com/ANXS/postgresql/archive/master.tar.gz
+- src: geerlingguy.nginx
+- src: geerlingguy.memcached
+- src: geerlingguy.php
+- src: geerlingguy.php-mysql
+- src: geerlingguy.php-memcached
+- src: geerlingguy.mysql
+- src: geerlingguy.repo-epel
+- src: geerlingguy.java
+- src: george.shuklin.flyway
+- name: iac-ansible-deployer-jee
+  src: library/iac-ansible-deployer-jee-1.0.1.tar.gz
+  # src: git+http://scm.acts.athens.intrasoft-intl.private/acts/iac-ansible-deployer-jee.git
+  # src: http://scm.acts.athens.intrasoft-intl.private/acts/iac-ansible-deployer-jee/repository/archive.tar.gz?ref=1.0.1
+  version: 1.0.1
+- name: iac-ansible-deployer-web
+  src: library/iac-ansible-deployer-web-1.0.1.tar.gz
+  # src: git+http://scm.acts.athens.intrasoft-intl.private/acts/iac-ansible-deployer-web.git
+  # src: http://scm.acts.athens.intrasoft-intl.private/acts/iac-ansible-deployer-web/repository/archive.tar.gz?ref=1.0.1
+  version: 1.0.1
