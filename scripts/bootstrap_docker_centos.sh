@@ -2,9 +2,12 @@
 
 set -e
 
+# See: https://docs.docker.com/install/linux/docker-ce/centos/
+
 echo "Installing Docker..."
 ## Install required packages. yum-utils provides the yum-config-manager utility, and device-mapper-persistent-data and lvm2 are required by the devicemapper storage driver.
-#sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum install -y yum-utils
+#sudo yum install -y device-mapper-persistent-data lvm2
 
 ## Use the following command to set up the stable repository. You always need the stable repository, even if you want to install builds from the edge or test repositories as well.
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -17,7 +20,7 @@ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/dock
 # sudo yum-config-manager --disable docker-ce-edge
 
 ## Install the latest version of Docker CE, or go to the next step to install a specific version:
-sudo yum install docker-ce
+sudo yum install -y docker-ce
 
 ## To install a specific version of Docker CE, list the available versions in the repo, then select and install:
 ## a. List and sort the versions available in your repo. This example sorts results by version number, highest to lowest, and is truncated:
@@ -38,3 +41,6 @@ echo "Adding vagrant to docker group..."
 sudo usermod -aG docker vagrant
 
 echo "Installing Docker... DONE."
+
+## Verify that docker is installed correctly by running the hello-world image
+# sudo docker run hello-world

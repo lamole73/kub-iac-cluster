@@ -83,12 +83,9 @@ Vagrantfile folder:
           "]
       end
       # ############## Install ansible
-      d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible.sh"
+      d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible_ubuntu.sh"
       if install_avahi then
-        d.vm.provision :shell, inline: <<-SHELL
-          apt-get install -y avahi-daemon libnss-mdns
-          service avahi-daemon start
-        SHELL
+		  d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_avahi_ubuntu.sh"
       end
       # ############## For hostname resolution of the VMs via /etc/hosts
       d.vm.provision :shell, run: "always", inline: <<-SHELL
@@ -113,8 +110,8 @@ Vagrantfile folder:
       end
       # ############## Shared folders of mgr
       # ####### iac-dms-8.5.7
-      d.vm.synced_folder "#{mainfolder_relative_path}../var-cdp-shared_857/install", "/data/repo"
-      d.vm.synced_folder "#{mainfolder_relative_path}../var-cdp-shared_857/scripts", "/data/scripts"
+      #d.vm.synced_folder "#{mainfolder_relative_path}../var-cdp-shared_857/install", "/data/repo"
+      #d.vm.synced_folder "#{mainfolder_relative_path}../var-cdp-shared_857/scripts", "/data/scripts"
       #  Do NOT Synch default folder since we will sync using relative path
       d.vm.synced_folder ".", "/vagrant", disabled: true
       d.vm.synced_folder "#{mainfolder_relative_path}", "/vagrant"
@@ -181,14 +178,12 @@ Vagrantfile folder:
         ############## Install docker
         d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_docker_centos.sh"
         ############## Disable swap
-        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable_centos.sh"
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable.sh"
+        ############## Install kubeadm
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubeadmn_centos.sh"
         # ############## For hostname resolution of the VMs
         if install_avahi then
-          d.vm.provision :shell, inline: <<-SHELL
-            yum install -y avahi
-            systemctl enable avahi-daemon
-            systemctl start avahi-daemon
-          SHELL
+			d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_avahi_centos.sh"
         end
         # ############## For hostname resolution of the VMs via /etc/hosts
         # d.vm.provision :shell, run: "always", inline: <<-SHELL
