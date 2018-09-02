@@ -5,6 +5,20 @@ set -e
 # See: https://docs.docker.com/install/linux/docker-ce/centos/
 
 echo "Installing Docker..."
+
+#################################################
+################ UBUNTU
+#################################################
+#apt-get update
+#apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
+#apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
+
+#################################################
+################ CENTOS
+#################################################
+
 ## Install required packages. yum-utils provides the yum-config-manager utility, and device-mapper-persistent-data and lvm2 are required by the devicemapper storage driver.
 #sudo yum install -y yum-utils
 #-sudo yum install -y device-mapper-persistent-data lvm2
@@ -33,6 +47,10 @@ echo "Installing Docker..."
 ########### Alternativelly install via default repositories because docker-ce-17.03.3.ce-1.el7 does not install
 sudo yum install -y docker
 
+#################################################
+################ BOTH
+#################################################
+
 ## Start and enable Docker.
 echo "Start and enable Docker..."
 sudo systemctl start docker
@@ -47,3 +65,4 @@ sudo systemctl enable docker
 
 ## Verify that docker is installed correctly by running the hello-world image
 # sudo docker run hello-world
+
