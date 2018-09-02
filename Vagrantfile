@@ -180,27 +180,31 @@ Vagrantfile folder:
         ############## Disable swap
         d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable.sh"
         ############## Install kubeadm
-        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubeadmn_centos.sh"
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_kubeadmn_centos.sh"
         # ############## For hostname resolution of the VMs
         if install_avahi then
 			d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_avahi_centos.sh"
         end
-        # ############## For hostname resolution of the VMs via /etc/hosts
-        # d.vm.provision :shell, run: "always", inline: <<-SHELL
-        #   for i in `seq 1 4`;
-        #   do
-        #     grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
-        #     RV=$?
-        #     if [ $RV == 0 ]; then
-        #       # update via sed
-        #       sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
-        #     else
-        #       # Add the line
-        #       echo "" >> /etc/hosts
-        #       echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
-        #     fi
-        #   done
-        # SHELL
+        ############## For hostname resolution of the VMs via /etc/hosts
+        d.vm.provision :shell, run: "always", inline: <<-SHELL
+          for i in `seq 1 4`;
+          do
+            grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
+            RV=$?
+            if [ $RV == 0 ]; then
+              # update via sed
+              sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
+            else
+              # Add the line
+              echo "" >> /etc/hosts
+              echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
+            fi
+          done
+        SHELL
+        # ############## sshpass - for ssh automatically to other hosts
+        d.vm.provision :shell, inline: <<-SHELL
+          yum install -y sshpass
+        SHELL
         # ############## For Oracle
         # # bento centos-7.4 already has net-tools installed
         d.vm.provision :shell, inline: <<-SHELL
