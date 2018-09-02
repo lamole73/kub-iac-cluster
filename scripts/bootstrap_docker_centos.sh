@@ -40,10 +40,10 @@ sudo systemctl enable docker
 
 ## If you would like to use Docker as a non-root user, you should now consider adding your user to the "docker" group with something like:
 ## Remember to log out and back in for this to take effect!
-echo "Adding vagrant to docker group..."
-sudo usermod -aG docker vagrant
+#echo "Adding vagrant to docker group..."
+#sudo usermod -aG docker vagrant
 
-echo "Installing Docker... DONE."
+#echo "Installing Docker... DONE."
 
 ## Verify that docker is installed correctly by running the hello-world image
 # sudo docker run hello-world
