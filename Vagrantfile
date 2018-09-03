@@ -69,12 +69,12 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
       config.vm.define "0#{i}" do |d|
         # ############## VirtualBox image/hostname/network
         if i == 0 then
-          d.vm.box = "ubuntu/bionic64" # 18.04 v20180831.0.0 
+          d.vm.box = "ubuntu/xenial64" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0
           d.vm.box_version = "20180831.0.0"
           #d.vm.box = "bento/centos-7.4"
           #d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
         else
-          d.vm.box = "ubuntu/bionic64"
+          d.vm.box = "ubuntu/xenial64" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0
           d.vm.box_version = "20180831.0.0" # 18.04 v20180831.0.0 
           # Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0
           #d.vm.box = "bento/centos-7.4"
@@ -95,7 +95,7 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
 Vagrantfile folder:
 #{vb_descr_vagrantfile_folder}
 
-## Vagrant VM using box: #{config.vm.box} version: #{config.vm.box_version}
+## Vagrant VM using box: #{d.vm.box} version: #{d.vm.box_version}
 ## #{vb_descr_notes_box}
 
 = hostname: #{vboxvmname}-0#{i}, mem: #{memArray[i]} MB, CPUs: #{cpuArray[i]}
@@ -105,8 +105,8 @@ Vagrantfile folder:
         end
         # ############## Install ansible (on 00 the manager only)
         if i == 0 then
-          # d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible.sh"
-          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible_centos.sh"
+          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible_ubuntu.sh"
+          # d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_ansible_centos.sh"
         end
         # ############## CENTOS 7 to initiallize correctly and install guest additions
         # if i > 0 then
@@ -116,28 +116,12 @@ Vagrantfile folder:
         # if shared_folders_via_vboxfs then
         #   d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_guestadditions_centos_redhat.sh"
         # end
-        # ############## Enable remote ssh login
-        # # bento centos-7.4 already has remote ssh login
-        # d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_enable_ssh_login_centos.sh"
+        ############## Enable remote ssh login
+        # bento centos-7.4 already has remote ssh login, but ubuntu/xenial64 does not
+        d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_enable_ssh_login.sh"
         # ############## Increase SWAP size to 2048MB or XE11G and oracle VM
         # # bento centos-7.4 already has 2 GB swap size
         # d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_increase_swap_size.sh"
-        ### Below are installed only on non mgr machine
-        if i > 0 then
-          ############## Install docker
-          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_docker_centos.sh"
-          ############## Disable swap
-          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable.sh"
-          ############## Install kubeadm
-          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_kubeadmn_centos.sh"
-          if i == 1 then
-            ############## Kubernetes: Initialize cluster (runs on master machine)
-            d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_init.sh"
-          else
-            ############## Kubernetes: Join cluster (runs on node machines)
-            d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_join.sh"
-          end
-        end
         # ############## For hostname resolution of the VMs
         if install_avahi then
           d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_avahi_centos.sh"
@@ -160,18 +144,14 @@ Vagrantfile folder:
         SHELL
         # ############## sshpass - for ssh automatically to other hosts
         d.vm.provision :shell, inline: <<-SHELL
-          yum install -y sshpass
+          #yum install -y sshpass
+          apt-get update && apt-get install -y sshpass
         SHELL
         # ############## For Oracle
         # # bento centos-7.4 already has net-tools installed
-        d.vm.provision :shell, inline: <<-SHELL
-          yum install -y net-tools
-        SHELL
-        # ############## Memory and CPUs of VM
-        d.vm.provider "virtualbox" do |v|
-          v.memory = memArray[i]
-          v.cpus = cpuArray[i]
-        end
+        #d.vm.provision :shell, inline: <<-SHELL
+        #  yum install -y net-tools
+        #SHELL
         # ############## Make password 1 for both root and vagrant
         d.vm.provision :shell, inline: <<-SHELL
           echo "Setting password of root to '1'..."
@@ -183,6 +163,29 @@ Vagrantfile folder:
         if install_samba then
           d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_samba_dms_centos.sh", args: "#{d.vm.hostname}"
         end
+        ### [Kubernetes] Below are installed only on non mgr machine
+        if i > 0 then
+          ############## Install docker
+          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_docker.sh"
+          ############## Disable swap
+          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_swap_disable.sh"
+          ############## Install kubeadm
+          d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_kubeadmn.sh"
+          if i == 1 then
+            ############## Kubernetes: Initialize cluster (runs on master machine)
+            d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_init.sh"
+          else
+            ############## Kubernetes: Join cluster (runs on node machines)
+            d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_join.sh"
+          end
+        end
+
+        # ############## Memory and CPUs of VM
+        d.vm.provider "virtualbox" do |v|
+          v.memory = memArray[i]
+          v.cpus = cpuArray[i]
+        end
+
         # ############## Do NOT Synch default folder (fix problem with rsync on windows)
         d.vm.synced_folder ".", "/vagrant", disabled: true
         

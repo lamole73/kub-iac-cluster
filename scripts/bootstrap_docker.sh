@@ -9,11 +9,11 @@ echo "Installing Docker..."
 #################################################
 ################ UBUNTU
 #################################################
-#apt-get update
-#apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-#add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
-#apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
 
 #################################################
 ################ CENTOS
@@ -45,7 +45,7 @@ echo "Installing Docker..."
 #-sudo yum install docker-ce-17.03.3.ce-1.el7
 
 ########### Alternativelly install via default repositories because docker-ce-17.03.3.ce-1.el7 does not install
-sudo yum install -y docker
+#sudo yum install -y docker
 
 #################################################
 ################ BOTH
@@ -58,10 +58,10 @@ sudo systemctl enable docker
 
 ## If you would like to use Docker as a non-root user, you should now consider adding your user to the "docker" group with something like:
 ## Remember to log out and back in for this to take effect!
-#echo "Adding vagrant to docker group..."
-#sudo usermod -aG docker vagrant
+echo "Adding vagrant to docker group..."
+sudo usermod -aG docker vagrant
 
-#echo "Installing Docker... DONE."
+echo "Installing Docker... DONE."
 
 ## Verify that docker is installed correctly by running the hello-world image
 # sudo docker run hello-world

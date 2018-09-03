@@ -4,22 +4,6 @@ set -e
 
 # See: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
 
-#################################################
-################ UBUNTU
-#################################################
-#apt-get update && apt-get install -y apt-transport-https curl
-#curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-#cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-#deb http://apt.kubernetes.io/ kubernetes-xenial main
-#EOF
-#apt-get update
-#apt-get install -y kubelet kubeadm kubectl
-#apt-mark hold kubelet kubeadm kubectl
-
-#################################################
-################ CENTOS
-#################################################
-
 ## Note: If you have already installed kubeadm, run apt-get update && apt-get upgrade or yum update to get the latest version of kubeadm.
 ## When you upgrade, the kubelet restarts every few seconds as it waits in a crashloop for kubeadm to tell it what to do. This crashloop is expected and normal. After you initialize your master, the kubelet runs normally.
 # sudo yum update
@@ -42,7 +26,7 @@ echo "Initializing your master... DONE"
 ## Installing a pod network add-on
 echo "Installing a pod network add-on..."
 #kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml
+su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml"
 echo "Installing a pod network add-on... DONE"
 
 
