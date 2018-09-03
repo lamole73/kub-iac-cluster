@@ -69,14 +69,16 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
       config.vm.define "0#{i}" do |d|
         # ############## VirtualBox image/hostname/network
         if i == 0 then
-          # d.vm.box = "ubuntu/trusty64"
-          # d.vm.box_version = ""
-          d.vm.box = "bento/centos-7.4"
-          d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
+          d.vm.box = "ubuntu/bionic64" # 18.04 v20180831.0.0 
+          d.vm.box_version = "20180831.0.0"
+          #d.vm.box = "bento/centos-7.4"
+          #d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
         else
+          d.vm.box = "ubuntu/bionic64"
+          d.vm.box_version = "20180831.0.0" # 18.04 v20180831.0.0 
           # Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0
-          d.vm.box = "bento/centos-7.4"
-          d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
+          #d.vm.box = "bento/centos-7.4"
+          #d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
         end
         d.vm.hostname = "#{environmentname}-0#{i}"
         d.vm.network :private_network, ip: "#{ippattern}#{i}"
