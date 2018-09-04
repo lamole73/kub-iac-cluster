@@ -69,13 +69,13 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
       config.vm.define "0#{i}" do |d|
         # ############## VirtualBox image/hostname/network
         if i == 0 then
-          d.vm.box = "ubuntu/xenial64" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0
-          d.vm.box_version = "20180831.0.0"
+          d.vm.box = "bento/ubuntu-16.04" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0, bento/ubuntu-16.04 version 201808.24.0
+          d.vm.box_version = "201808.24.0"
           #d.vm.box = "bento/centos-7.4"
           #d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
         else
-          d.vm.box = "ubuntu/xenial64" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0
-          d.vm.box_version = "20180831.0.0" # 18.04 v20180831.0.0 
+          d.vm.box = "bento/ubuntu-16.04" # ubuntu/bionic64 = 18.04 version 20180831.0.0, ubuntu/xenial64 = 16.04 version 20180831.0.0, bento/ubuntu-16.04 version 201808.24.0
+          d.vm.box_version = "201808.24.0"
           # Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0
           #d.vm.box = "bento/centos-7.4"
           #d.vm.box_version = "201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04

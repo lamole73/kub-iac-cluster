@@ -11,6 +11,9 @@ set -e
 ## Initializing your master
 echo "Initializing your master..."
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.10.27.81
+# Using kub-master / kube-node2...
+#sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.247.81
+#-sudo kubeadm init --apiserver-advertise-address=10.10.27.81
 
 #kubeadm join 10.10.27.81:6443 --token 40s1mc.nmrj3tjm4qutlh8p --discovery-token-ca-cert-hash sha256:4e27080adfc1df960e6f71e45dbd822ab27ebcbc5ae0df2a691758a66e52e77b
 
@@ -25,8 +28,15 @@ echo "Initializing your master... DONE"
 
 ## Installing a pod network add-on
 echo "Installing a pod network add-on..."
-#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
-su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml"
+
+# - Flannel
+su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml"
+#-su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml"
+
+# - Weave Net
+#-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+
 echo "Installing a pod network add-on... DONE"
 
 
