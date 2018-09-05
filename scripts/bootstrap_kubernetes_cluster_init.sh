@@ -30,7 +30,8 @@ echo "Initializing your master... DONE"
 echo "Installing a pod network add-on..."
 
 # - Flannel
-su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml"
+su - $nonrootUser -c "kubectl apply -f /vagrant/scripts/kubernetes/kube-flannel.yml"
+#-su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml"
 #-su - $nonrootUser -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml"
 
 # - Weave Net
@@ -44,3 +45,14 @@ echo "Installing a pod network add-on... DONE"
 ## By default, your cluster will not schedule pods on the master for security reasons. If you want to be able to schedule pods on the master, e.g. for a single-machine Kubernetes cluster for development, run:
 ## kubectl taint nodes --all node-role.kubernetes.io/master-
 
+##### Tear down
+# kub_node=kub-03
+# kubectl drain $kub_node --delete-local-data --force --ignore-daemonsets
+# kubectl delete node $kub_node
+# sudo kubeadm reset --force
+# nonrootUser=vagrant
+# sudo rm -rf /home/$nonrootUser/.kube
+# sudo reboot ???
+### On nodes
+# sudo rm -rf /etc/kubernetes
+# sudo reboot
