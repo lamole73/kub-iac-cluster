@@ -10,6 +10,7 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
   mainfolder_relative_path = ""
   # The environment name (servers will be #{environmentname}-01 .. 04)
   environmentname="kub"
+  ippattern_gw="10.10.27.8"
   ippattern="10.10.27.8"
   # The VirtualBox VM name prefix, actual names will be #{vboxvmname}-mgr, #{vboxvmname}-01, e.t.c.
   # set it to nil to not name the VirtualBox VMs, i.e. let vagrant give default name
@@ -165,6 +166,13 @@ Vagrantfile folder:
         end
         ### [Kubernetes] Below are installed only on non mgr machine
         if i > 0 then
+          ############## Manually override the default router configuration so that Kubernetes network work despite the 1st NAT network interface
+          ############## see https://superuser.com/questions/752954/need-to-do-bridged-adapter-only-in-vagrant-no-nat
+          # DOES NOT WORK since then we cannot connect to internet
+          #d.vm.provision :shell, run: "always", inline: <<-SHELL
+          #  route add default gw 192.168.0.1
+          #  eval `route -n | awk '{ if ($8 =="eth0" && $2 != "0.0.0.0") print "route del default gw " $2; }'`
+          #SHELL
           ############## Install docker
           d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_docker.sh"
           ############## Disable swap
@@ -174,6 +182,11 @@ Vagrantfile folder:
           if i == 1 then
             ############## Kubernetes: Initialize cluster (runs on master machine)
             d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_init.sh"
+            # Then to test networking use kub-sample-guestbook
+            # git clone https://github.com/lamole73/kub-sample-guestbook.git
+            # cd kub-sample-guestbook
+            # kubectl create -f .
+            # kubectl get all
           else
             ############## Kubernetes: Join cluster (runs on node machines)
             d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_kubernetes_cluster_join.sh"
