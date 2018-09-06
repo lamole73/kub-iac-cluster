@@ -17,7 +17,7 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
   vboxvmname="#{environmentname}"
   # Change memory for each VM, make nil to not use the vm
   memArray = Array.new(4)
-  memArray[0] = 512  # 512   the mgr running the ansible scripts
+  memArray[0] = nil  # 512   the mgr running the ansible scripts
   memArray[1] = 2048 # 2048  01 is the master node
   memArray[2] = 2048 # 2048  02 is the node 2
   memArray[3] = 2048 # 2048  03 is the node 3
@@ -34,7 +34,8 @@ Vagrant.configure(_VAGRANTFILE_API_VERSION) do |config|
 
   # Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0
   # vb_descr_notes_box is only used on VirtualBox description
-  vb_descr_notes_box="Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0"
+  #vb_descr_notes_box="Note bento/centos-7.4 version: 201803.24.0 contains centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0"
+  vb_descr_notes_box="Note bento/ubuntu-16.04 version: 201808.24.0 build_timestamp:20180902154418 contains ubuntu-16.04-amd64, see https://app.vagrantup.com/bento/boxes/centos-7.4/versions/201803.24.0"
   vb_box_name="bento/centos-7.4"
   vb_box_version="201803.24.0" # 201803.24.0 is centos-7.4-x86_64, build_timestamp: 2018-03-26-16:29:04
   config.vm.box = "#{vb_box_name}"
@@ -132,21 +133,21 @@ Vagrantfile folder:
           d.vm.provision :shell, path: "#{mainfolder_relative_path}scripts/bootstrap_avahi_centos.sh"
         end
         ############## For hostname resolution of the VMs via /etc/hosts
-        #d.vm.provision :shell, run: "always", inline: <<-SHELL
-        #  for i in `seq 0 3`;
-        #  do
-        #    grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
-        #    RV=$?
-        #    if [ $RV == 0 ]; then
-        #      # update via sed
-        #      sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
-        #    else
-        #      # Add the line
-        #      echo "" >> /etc/hosts
-        #      echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
-        #    fi
-        #  done
-        #SHELL
+        d.vm.provision :shell, run: "always", inline: <<-SHELL
+          for i in `seq 0 3`;
+          do
+            grep -q "^[0-9].*#{environmentname}-0${i}" /etc/hosts
+            RV=$?
+            if [ $RV == 0 ]; then
+              # update via sed
+              sed -i "s|^[0-9].*#{environmentname}-0${i}.*$|#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private|g" /etc/hosts
+            else
+              # Add the line
+              echo "" >> /etc/hosts
+              echo "#{ippattern}${i} #{environmentname}-0${i} #{environmentname}-0${i}.labros.private" >> /etc/hosts
+            fi
+          done
+        SHELL
         # ############## sshpass - for ssh automatically to other hosts
         d.vm.provision :shell, inline: <<-SHELL
           #yum install -y sshpass
