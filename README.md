@@ -1,6 +1,6 @@
 # README kub-iac-cluster
 
-Version: *1.0-0*  
+Version: *1.0-0*
 
 An IAC project using Vagrant to create and initialize a kubernetes cluster of 1 master and 2 nodes.
 
