@@ -24,6 +24,7 @@ hs_err_pid*
 
 # inteliJ
 .idea
+*.iml
 
 # Vagrant
 .vagrant
